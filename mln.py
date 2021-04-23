@@ -21,6 +21,7 @@ if out not equal to target
 
 class mln:
 
+    # TODO setup a bias for the hidden layer
     # sets perceptron parameters and initializes weights matrix
     def __init__(self, num_input_nodes, num_output_nodes, num_hidden_nodes):
         self.num_in = num_input_nodes + 1
@@ -48,6 +49,7 @@ class mln:
         return input_data
 
 
+    # TODO add a momentum term as a parameter
     def train(self, input_data, output_data, learning_rate, num_epochs):
         for epoch in range(num_epochs):
             count = 1
@@ -67,7 +69,6 @@ class mln:
                     ab = np.multiply(a, b)
                     err_out = np.multiply(y, ab)
 
-                    # TODO verify this
                     # calculate hidden layer error using h(1 - h) * dot(transpose(hidden_weights), err_out)
                     a = np.add(1, -self.hidden_activations)
                     b = np.dot(np.transpose(self.output_weights), err_out)
@@ -90,10 +91,7 @@ class mln:
                     d_w_hidden = np.dot(err_hidden, x)
                     d_w_hidden = d_w_hidden * learning_rate
                     self.hidden_weights += d_w_hidden
-    
 
-                    #
-                    #
                 print('\r# input data: ' + str(count), end = '')
                 count += 1
             # calculate accuracy???
@@ -129,15 +127,3 @@ class mln:
         self.output_activations = np.dot(self.output_weights, self.hidden_activations)
         self.output_activations = sigmoid(self.output_activations)
         return self.output_activations
-
-
-    def one_hot(self, raw_output):
-        dim = np.shape(raw_output)
-        out = np.zeros(dim[0])
-        index = np.argmax(raw_output)
-        out[index] = 1
-        return out
-
-
-    def interpret(self, one_hot_output):
-        return np.argmax(one_hot_output)
