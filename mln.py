@@ -21,7 +21,6 @@ if out not equal to target
 
 class mln:
 
-    # TODO setup a bias for the hidden layer
     # sets perceptron parameters and initializes weights matrix
     def __init__(self, num_input_nodes, num_output_nodes, num_hidden_nodes):
         self.num_in = num_input_nodes + 1
@@ -31,6 +30,8 @@ class mln:
         self.output_weights = np.random.default_rng().uniform(-0.05, 0.05, (self.num_out, self.num_hidden))
         self.hidden_activations = np.zeros(self.num_hidden)
         self.output_activations = np.zeros(self.num_out)
+        self.prev_dw_hidden = np.zeros((self.num_hidden, self.num_in))
+        self.prev_dw_out = np.zeros((self.num_out, self.num_hidden))
 
 
     # data = pre_process(data)
@@ -50,7 +51,7 @@ class mln:
 
 
     # TODO add a momentum term as a parameter
-    def train(self, input_data, output_data, learning_rate, num_epochs):
+    def train(self, input_data, output_data, learning_rate, momentum, num_epochs):
         for epoch in range(num_epochs):
             count = 1
             for data, target in zip(input_data, output_data):
@@ -80,17 +81,20 @@ class mln:
                     err_out = np.transpose(err_out)
                     h = np.array([self.hidden_activations])
                     d_w_out = np.dot(err_out, h)
-                    d_w_out = d_w_out * learning_rate
+                    d_w_out = d_w_out * learning_rate + self.prev_dw_out * momentum
                     self.output_weights += d_w_out
-    
+                    # save weight changes for momentum of next iteration
+                    self.prev_dw_out = d_w_out
 
                     # update hidden weights using w = w + eta * err_hidden * input
                     err_hidden = np.array([err_hidden])
                     err_hidden = np.transpose(err_hidden)
                     x = np.array([data])
                     d_w_hidden = np.dot(err_hidden, x)
-                    d_w_hidden = d_w_hidden * learning_rate
+                    d_w_hidden = d_w_hidden * learning_rate + self.prev_dw_hidden * momentum
                     self.hidden_weights += d_w_hidden
+                    # save weight changes for momentum calculation of next iteration
+                    self.prev_dw_hidden = d_w_hidden
 
                 print('\r# input data: ' + str(count), end = '')
                 count += 1
