@@ -4,7 +4,7 @@ import tensorflow
 from tensorflow import keras
 import matplotlib.pyplot as plt
 
-nunm_hidden_nodes = 20
+num_hidden_nodes = 20
 learning_rate = 0.001
 momentum = 0
 num_epochs = 20
