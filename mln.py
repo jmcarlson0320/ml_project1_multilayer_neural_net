@@ -26,11 +26,11 @@ class mln:
     def __init__(self, num_input_nodes, num_output_nodes, num_hidden_nodes):
         self.num_in = num_input_nodes + 1
         self.num_out = num_output_nodes
-        self.num_hidden = num_hidden_nodes
+        self.num_hidden = num_hidden_nodes + 1
         self.hidden_weights = np.random.default_rng().uniform(-0.05, 0.05, (self.num_hidden, self.num_in))
         self.output_weights = np.random.default_rng().uniform(-0.05, 0.05, (self.num_out, self.num_hidden))
-        self.hidden_activations = np.zeros(num_hidden_nodes)
-        self.output_activations = np.zeros(num_output_nodes)
+        self.hidden_activations = np.zeros(self.num_hidden)
+        self.output_activations = np.zeros(self.num_out)
 
 
     # data = pre_process(data)
